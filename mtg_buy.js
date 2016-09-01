@@ -7,12 +7,18 @@
 // @grant       none
 // ==/UserScript==
 
-var ENABLE_MTG_BUYER = false;
+var MTG_BUYER_CLASS = {
+    start: function() {
+        /*alert("Let's go!");*/
+    }
+};
+var MTG_BUYER = Object.create(MTG_BUYER_CLASS);
 
 document.addEventListener('keydown', function(e) {
     if (e.keyCode == 77 /* m */
         && e.ctrlKey && e.altKey) {
-            ENABLE_MTG_BUYER = true;
+            MTG_BUYER.start();
         }
     return false;
 })
+
