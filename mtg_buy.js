@@ -5,11 +5,24 @@
 // @include     http*://*.taobao.com/*
 // @version     1
 // @grant       none
+// @require     https://upcdn.b0.upaiyun.com/libs/jquery/jquery-2.0.3.min.js
 // ==/UserScript==
 
 var MTG_BUYER_CLASS = {
     start: function() {
-        /*alert("Let's go!");*/
+        $(".J_Cover").append(
+            [
+             '<div id="mtgCarManager">',
+             '<form>',
+             '<input type="text" id="myNumber1" value="">',
+             '<input type="text" id="myNumber2" value="">',
+             '<p id="myNumberSum">&nbsp;</p>',
+             '<button id="gmAddNumsBtn" type="button">Add the two numbers</button>',
+             '<button id="gmCloseDlgBtn" type="button">Close popup</button>',
+             '</form>',
+             '</div>'
+            ].join('\n')
+                             );
     }
 };
 var MTG_BUYER = Object.create(MTG_BUYER_CLASS);
