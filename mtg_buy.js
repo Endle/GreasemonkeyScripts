@@ -9,21 +9,58 @@
 // ==/UserScript==
 
 var MTG_BUYER_CLASS = {
+    hasCreatedMainDiv   : false,
+    submitForm : function(e) {
+        alert("B");
+        return false;
+    },
     start: function() {
-        $(".J_Cover").append(
-            [
-             '<div id="mtgCarManager">',
-             '<form>',
-             '<input type="text" id="myNumber1" value="">',
-             '<input type="text" id="myNumber2" value="">',
-             '<p id="myNumberSum">&nbsp;</p>',
-             '<button id="gmAddNumsBtn" type="button">Add the two numbers</button>',
-             '<button id="gmCloseDlgBtn" type="button">Close popup</button>',
-             '</form>',
-             '</div>'
-            ].join('\n')
-                             );
-    }
+        /*
+        if(hasCreatedMainDiv)
+            return hasCreatedMainDiv;
+        hasCreatedMainDiv = true;
+        */
+
+        var mainDiv = document.createElement("div");
+        mainDiv.setAttribute("id", "mtgCarManager");
+
+        shopAmount = 3;
+        /*alert("to go");*/
+        var createForm = function(shop) {
+            var form = document.createElement("form");
+            form.setAttribute("id", "mtgCarInputArea");
+
+            for (var i=0; i<shop; i++) {
+                var inp = document.createElement("input");
+                inp.type="text";
+                inp.setAttribute("id", "mtgCarShopLink"+String(i));
+                inp.setAttribute("type", "text");
+                form.appendChild(inp);
+            }
+
+            /*var p = document.createElement("p");*/
+            /*p.text = "输入单卡名称";*/
+            form.appendChild( document.createElement("br") );
+            form.appendChild( document.createTextNode("输入单卡名称") );
+            form.appendChild( document.createElement("br") );
+
+            var btn = document.createElement("button");
+            btn.appendChild( document.createTextNode("Search") );
+            btn.id = "mtgSubmitButton";
+            btn.type = "button";
+            btn.onclick=function(e) {alert("click");submitForm(e);return false;}
+            btn.onsubmit=function(e) {alert("submit");return false;}
+            /*form.onsubmit=function(e) {alert("submit");return false;}*/
+            /*btn.onclick=submitForm;*/
+            form.appendChild(btn);
+            return form;
+        }
+
+        mainDiv.appendChild(createForm(shopAmount));
+        $(".J_Cover").append(mainDiv);
+        /*alert("Finished init");*/
+        /*$(".J_Cover").append(*/
+    },
 };
 var MTG_BUYER = Object.create(MTG_BUYER_CLASS);
 
