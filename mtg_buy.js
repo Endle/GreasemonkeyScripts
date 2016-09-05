@@ -10,17 +10,15 @@
 
 class MTG_BUYER_CLASS {
     constructor() {}
-    /*
-    submitForm(e) {
-        alert("B");
-        return false;
-    }
-    */
-
 };
-MTG_BUYER_CLASS.prototype.start = function() {
-    this.submitForm = function(e) {alert("Stub here"); return false;}
+var MTG_BUYER = new MTG_BUYER_CLASS();
 
+MTG_BUYER_CLASS.prototype.submitForm = function(e) {
+        alert("submit");
+        return false;
+}
+
+MTG_BUYER_CLASS.prototype.start = function() {
     this.mainDiv = document.createElement("div");
     this.mainDiv.setAttribute("id", "mtgCarManager");
 
@@ -43,10 +41,10 @@ MTG_BUYER_CLASS.prototype.start = function() {
 
         var btn = document.createElement("button");
         btn.appendChild( document.createTextNode("Search") );
+        form.appendChild(btn);
         btn.id = "mtgSubmitButton";
         btn.type = "button";
-        btn.onclick=function(e) {alert("click");this.submitForm(e);return false;}
-        form.appendChild(btn);
+        btn.onclick=function(e) {MTG_BUYER.submitForm(e);return false;}
         return form;
     }
 
@@ -56,8 +54,6 @@ MTG_BUYER_CLASS.prototype.start = function() {
     return false;
 }
 
-/*var MTG_BUYER = Object.create(MTG_BUYER_CLASS);*/
-var MTG_BUYER = new MTG_BUYER_CLASS();
 
 document.addEventListener('keydown', function(e) {
     if (e.keyCode == 77 /* m */
