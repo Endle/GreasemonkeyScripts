@@ -10,7 +10,7 @@
 
 class MTG_BUYER_CLASS {
     constructor() {}
-};
+}
 var MTG_BUYER = new MTG_BUYER_CLASS();
 
 MTG_BUYER_CLASS.prototype.submitForm = function(e) {
@@ -20,11 +20,11 @@ MTG_BUYER_CLASS.prototype.submitForm = function(e) {
         for (var i=0; i<this.shopAmount; i++) {
             shops[i] = $("#mtgCarShopLink"+String(i)).val();
         }
-        for (var i=0; i<this.cardAmount; i++) {
+        for (    i=0; i<this.cardAmount; i++) {
             cards[i] = $("#mtgCarCardName"+String(i)).val();
         }
         return false;
-}
+};
 
 MTG_BUYER_CLASS.prototype.start = function() {
     this.mainDiv = document.createElement("div");
@@ -48,7 +48,7 @@ MTG_BUYER_CLASS.prototype.start = function() {
         form.appendChild( document.createTextNode("输入单卡名称") );
         form.appendChild( document.createElement("br") );
 
-        for (var i=0; i<card; i++) {
+        for (    i=0; i<card; i++) {
             var inp = document.createElement("input");
             inp.type="text";
             inp.setAttribute("id", "mtgCarCardName"+String(i));
@@ -62,22 +62,21 @@ MTG_BUYER_CLASS.prototype.start = function() {
         form.appendChild(btn);
         btn.id = "mtgSubmitButton";
         btn.type = "button";
-        btn.onclick=function(e) {MTG_BUYER.submitForm(e);return false;}
+        btn.onclick=function(e) {MTG_BUYER.submitForm(e);return false;};
         return form;
-    }
+    };
 
     this.mainDiv.appendChild(this.createForm(this.shopAmount, this.cardAmount));
 
     $(".J_Cover").append(this.mainDiv);
     return false;
-}
+};
 
 
 document.addEventListener('keydown', function(e) {
-    if (e.keyCode == 77 /* m */
-        && e.ctrlKey && e.altKey) {
+    if (e.keyCode == 77 /* m */ && e.ctrlKey && e.altKey) {
             MTG_BUYER.start();
         }
     return false;
-})
+});
 
