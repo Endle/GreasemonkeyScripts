@@ -8,25 +8,13 @@
 // @require     https://upcdn.b0.upaiyun.com/libs/jquery/jquery-2.0.3.min.js
 // ==/UserScript==
 
-var MTG_BUYER_CLASS = {
-    hasCreatedMainDiv   : false,
-    submitForm : function(e) {
-        alert("B");
-        return false;
-    },
-    start: function() {
-        /*
-        if(hasCreatedMainDiv)
-            return hasCreatedMainDiv;
-        hasCreatedMainDiv = true;
-        */
+class MTG_BUYER_CLASS {
+    constructor() {
+        this.mainDiv = document.createElement("div");
+        this.mainDiv.setAttribute("id", "mtgCarManager");
 
-        var mainDiv = document.createElement("div");
-        mainDiv.setAttribute("id", "mtgCarManager");
-
-        shopAmount = 3;
-        /*alert("to go");*/
-        var createForm = function(shop) {
+        this.shopAmount = 3;
+        this.createForm = function(shop) {
             var form = document.createElement("form");
             form.setAttribute("id", "mtgCarInputArea");
 
@@ -38,8 +26,6 @@ var MTG_BUYER_CLASS = {
                 form.appendChild(inp);
             }
 
-            /*var p = document.createElement("p");*/
-            /*p.text = "输入单卡名称";*/
             form.appendChild( document.createElement("br") );
             form.appendChild( document.createTextNode("输入单卡名称") );
             form.appendChild( document.createElement("br") );
@@ -49,20 +35,27 @@ var MTG_BUYER_CLASS = {
             btn.id = "mtgSubmitButton";
             btn.type = "button";
             btn.onclick=function(e) {alert("click");submitForm(e);return false;}
-            btn.onsubmit=function(e) {alert("submit");return false;}
-            /*form.onsubmit=function(e) {alert("submit");return false;}*/
-            /*btn.onclick=submitForm;*/
             form.appendChild(btn);
             return form;
         }
 
-        mainDiv.appendChild(createForm(shopAmount));
-        $(".J_Cover").append(mainDiv);
-        /*alert("Finished init");*/
-        /*$(".J_Cover").append(*/
-    },
+        this.mainDiv.appendChild(this.createForm(this.shopAmount));
+    }
+    /*
+    submitForm(e) {
+        alert("B");
+        return false;
+    }
+    */
+
 };
-var MTG_BUYER = Object.create(MTG_BUYER_CLASS);
+MTG_BUYER_CLASS.prototype.start = function() {
+        $(".J_Cover").append(this.mainDiv);
+        return false;
+}
+
+/*var MTG_BUYER = Object.create(MTG_BUYER_CLASS);*/
+var MTG_BUYER = new MTG_BUYER_CLASS();
 
 document.addEventListener('keydown', function(e) {
     if (e.keyCode == 77 /* m */
