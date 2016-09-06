@@ -9,26 +9,34 @@
 // ==/UserScript==
 
 
-function writeFrameToCanvas() {
-    $("#mtgResultCanvas").html("gogo!");
-    alert("called");
-}
-
 class MTG_BUYER_CLASS {
     constructor() {}
 }
 var MTG_BUYER = new MTG_BUYER_CLASS();
 
+function writeFrameToCanvas() {
+    var createShopDiv = function (serial, width) {
+        var d = document.createElement("div");
+        d.id = "mtgShopDiv" + String(serial);
+        d.innerHTML = "Loading " + MTG_BUYER.shops[serial];
+        d.style.background="grey";
+        d.style.border="1px solid black";
+        return d;
+    };
+    for (var i=0; i < MTG_BUYER.shopAmount; i++) {
+        $("#mtgResultCanvas").append(createShopDiv(i,100));
+    }
+}
+
 MTG_BUYER_CLASS.prototype.submitForm = function(e) {
-    var shops = new Array(this.shopAmount);
-    var cards = new Array(this.cardAmount);
+    this.shops = new Array(this.shopAmount);
+    this.cards = new Array(this.cardAmount);
 
     var i;
-    for (i=0; i<this.shopAmount; i++) {shops[i] = $("#mtgCarShopLink"+String(i)).val();}
-    for (i=0; i<this.cardAmount; i++) {cards[i] = $("#mtgCarCardName"+String(i)).val();}
+    for (i=0; i<this.shopAmount; i++) {this.shops[i] = $("#mtgCarShopLink"+String(i)).val();}
+    for (i=0; i<this.cardAmount; i++) {this.cards[i] = $("#mtgCarCardName"+String(i)).val();}
 
     writeFrameToCanvas();
-
     return false;
 };
 
@@ -47,6 +55,7 @@ MTG_BUYER_CLASS.prototype.start = function() {
             inp.type="text";
             inp.setAttribute("id", "mtgCarShopLink"+String(i));
             inp.setAttribute("type", "text");
+            inp.setAttribute("value", "shop link");
             form.appendChild(inp);
         }
 
@@ -74,7 +83,7 @@ MTG_BUYER_CLASS.prototype.start = function() {
 
     this.mainDiv.appendChild(this.createForm(this.shopAmount, this.cardAmount));
 
-    var resultCanvas = document.createElement("p");
+    var resultCanvas = document.createElement("div");
     resultCanvas.id = "mtgResultCanvas";
     this.mainDiv.appendChild(resultCanvas);
 
