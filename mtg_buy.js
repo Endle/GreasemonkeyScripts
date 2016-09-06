@@ -8,22 +8,28 @@
 // @require     https://upcdn.b0.upaiyun.com/libs/jquery/jquery-2.0.3.min.js
 // ==/UserScript==
 
+
+function writeFrameToCanvas() {
+    $("#mtgResultCanvas").html("gogo!");
+    alert("called");
+}
+
 class MTG_BUYER_CLASS {
     constructor() {}
 }
 var MTG_BUYER = new MTG_BUYER_CLASS();
 
 MTG_BUYER_CLASS.prototype.submitForm = function(e) {
-        var shops = new Array(this.shopAmount);
-        var cards = new Array(this.cardAmount);
+    var shops = new Array(this.shopAmount);
+    var cards = new Array(this.cardAmount);
 
-        for (var i=0; i<this.shopAmount; i++) {
-            shops[i] = $("#mtgCarShopLink"+String(i)).val();
-        }
-        for (    i=0; i<this.cardAmount; i++) {
-            cards[i] = $("#mtgCarCardName"+String(i)).val();
-        }
-        return false;
+    var i;
+    for (i=0; i<this.shopAmount; i++) {shops[i] = $("#mtgCarShopLink"+String(i)).val();}
+    for (i=0; i<this.cardAmount; i++) {cards[i] = $("#mtgCarCardName"+String(i)).val();}
+
+    writeFrameToCanvas();
+
+    return false;
 };
 
 MTG_BUYER_CLASS.prototype.start = function() {
@@ -67,6 +73,10 @@ MTG_BUYER_CLASS.prototype.start = function() {
     };
 
     this.mainDiv.appendChild(this.createForm(this.shopAmount, this.cardAmount));
+
+    var resultCanvas = document.createElement("p");
+    resultCanvas.id = "mtgResultCanvas";
+    this.mainDiv.appendChild(resultCanvas);
 
     $(".J_Cover").append(this.mainDiv);
     return false;
