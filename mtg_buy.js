@@ -14,6 +14,39 @@ class MTG_BUYER_CLASS {
 }
 var MTG_BUYER = new MTG_BUYER_CLASS();
 
+function shopLinkToShopDiv(link) {
+    var i;
+    for(i=0; i<MTG_BUYER.shopAmount; i++) {
+        if (MTG_BUYER.shops[i] == link)
+            return $("#mtgShopDiv" + String(i));
+    }
+    return undefined;
+}
+/**
+ * writeItemToShopCanvas
+    * 将单个商品的信息写入到其对应商店的 div 中
+ *
+ * @param {string} item - HTML 格式的商品信息
+ * @param {string} shopLink
+ * @returns {undefined}
+ */
+function writeItemToShopCanvas(item, shopLink) {
+    var div = shopLinkToShopDiv(shopLink);
+    div.html(div.html() + "<br /> (Stub in writeItemToShopCanvas) " + item);
+    return true;
+}
+
+/**
+ * fetchItemInShop
+ *
+ * @param {string} itemName
+ * @param {string} shopLink
+ * @returns {string} - processed HTML code
+ */
+function fetchItemInShop(itemName, shopLink) {
+    return "(Stub in fetchItemInShop)" + itemName + shopLink;
+}
+
 function writeFrameToCanvas() {
     var createShopDiv = function (serial, width) {
         var d = document.createElement("div");
@@ -32,11 +65,17 @@ MTG_BUYER_CLASS.prototype.submitForm = function(e) {
     this.shops = new Array(this.shopAmount);
     this.cards = new Array(this.cardAmount);
 
-    var i;
+    var i, j;
     for (i=0; i<this.shopAmount; i++) {this.shops[i] = $("#mtgCarShopLink"+String(i)).val();}
     for (i=0; i<this.cardAmount; i++) {this.cards[i] = $("#mtgCarCardName"+String(i)).val();}
 
     writeFrameToCanvas();
+    for (i=0; i<this.shopAmount; i++)
+    for (j=0; j<this.cardAmount; j++) {
+        ret = fetchItemInShop(this.cards[j], this.shops[i]);
+        writeItemToShopCanvas(ret, this.shops[i]);
+    }
+
     return false;
 };
 
@@ -55,7 +94,7 @@ MTG_BUYER_CLASS.prototype.start = function() {
             inp.type="text";
             inp.setAttribute("id", "mtgCarShopLink"+String(i));
             inp.setAttribute("type", "text");
-            inp.setAttribute("value", "shop link");
+            inp.setAttribute("value", "shop link : " + String(i));
             form.appendChild(inp);
         }
 
@@ -68,6 +107,7 @@ MTG_BUYER_CLASS.prototype.start = function() {
             inp.type="text";
             inp.setAttribute("id", "mtgCarCardName"+String(i));
             inp.setAttribute("type", "text");
+            inp.setAttribute("value", "card name : " + String(i));
             form.appendChild(inp);
         }
 
