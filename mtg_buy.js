@@ -68,6 +68,9 @@ MTG_BUYER_CLASS.prototype.submitForm = function(e) {
     var i, j;
     for (i=0; i<this.shopAmount; i++) {this.shops[i] = $("#mtgCarShopLink"+String(i)).val();}
     for (i=0; i<this.cardAmount; i++) {this.cards[i] = $("#mtgCarCardName"+String(i)).val();}
+    //FIXME: Used for test
+    this.shops[0] = "https://shop62237807.taobao.com";
+    this.shops[1] = "https://shop65188790.taobao.com";
 
     writeFrameToCanvas();
     for (i=0; i<this.shopAmount; i++)
@@ -84,7 +87,7 @@ MTG_BUYER_CLASS.prototype.start = function() {
     this.mainDiv.setAttribute("id", "mtgCarManager");
 
     this.shopAmount = 2;
-    this.cardAmount = 4;
+    this.cardAmount = 1;
     this.createForm = function(shop, card) {
         var form = document.createElement("form");
         form.setAttribute("id", "mtgCarInputArea");
