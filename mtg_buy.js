@@ -97,8 +97,18 @@ MTG_BUYER_CLASS.prototype.arrangeRquests = function() {
             resolve(value, ifr);
         });
     }
-    function asycWriteResult(req, result) {
-        writeItemToShopCanvas(req.itemName, req.shopLink);
+    function asycFillWebForm(req, ifr) {
+        return new Promise(function(resolve, reject) {
+            resolve(req, "Stub fill web form");
+        });
+    }
+    function asycResolveWebDate(req, html) {
+        return new Promise(function(resolve, reject) {
+            resolve(req, html);
+        });
+    }
+    function writeResult(req, result) {
+        writeItemToShopCanvas(result, req.shopLink);
     }
     writeFrameToCanvas();
     for (var i=0; i<this.shopAmount; i++)
@@ -108,7 +118,9 @@ MTG_BUYER_CLASS.prototype.arrangeRquests = function() {
         req.shopLink = this.shops[i];
         Promise.resolve(req)
             .then(asycCreateIframe)
-            .then(asycWriteResult);
+            .then(asycFillWebForm)
+            .then(asycResolveWebDate)
+            .then(writeResult);
     }
     alert("finished request");
 };
