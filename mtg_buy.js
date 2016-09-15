@@ -89,6 +89,8 @@ MTG_BUYER_CLASS.prototype.arrangeRquests = function() {
         return new Promise(function(resolve, reject) {
             var sync_createIframe = function(url) {
                 var ifr = document.createElement("iframe");
+                ifr.width = "1000px";
+                ifr.height = "400px";
                 ifr.src = url;
                 $("#mtgResultCanvas").append(ifr);
                 return ifr;
