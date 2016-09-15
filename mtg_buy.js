@@ -8,6 +8,15 @@
 // @require     https://upcdn.b0.upaiyun.com/libs/jquery/jquery-2.0.3.min.js
 // ==/UserScript==
 
+/**
+ * jsRandomSleep
+ *
+ * @param baseTime
+ * @returns {undefined}
+ */
+function jsRandomSleepCalc(baseTime) {
+    return Math.round(Math.random() * baseTime * 2.0) + baseTime;
+}
 
 class MTG_BUYER_CLASS {
     constructor() {}
@@ -38,21 +47,28 @@ function writeItemToShopCanvas(item, shopLink) {
 
 /**
  * fetchItemInShop
+    * 这个函数是一组 Promise 的包装，包括了整个获取信息的操作
+    * fetchItemInShop 自身也是一个 Promise
  *
  * @param {string} itemName
  * @param {string} shopLink
  * @returns {string} - processed HTML code
  */
 function fetchItemInShop(itemName, shopLink) {
-    var createIframe = function(url) {
+    var sync_createIframe = function(url) {
         var ifr = document.createElement("iframe");
         ifr.src = url;
-        //document.body.appendChild(ifr);
         $("#mtgResultCanvas").append(ifr);
         return ifr;
     };
-    createIframe(shopLink);
-    return "(Stub in fetchItemInShop)" + itemName + shopLink;
+    var promise_createIframe = new Promise(function (resolve){
+        resolve(42);
+    });
+    jsRandomSleep(1000);
+    promise_createIframe.then(function(value){
+        console.log(value);});
+    /*createIframe(shopLink);*/
+    return "(Stub in fetchItemInShop)" + itemName + shopLink + "<br />";
 }
 
 function writeFrameToCanvas() {
@@ -69,11 +85,48 @@ function writeFrameToCanvas() {
     }
 }
 
+var SINGLE_SEARCH_PARAMETER =
+    {itemName: "Mox", shopLink: "https://shop101650459.taobao.com"};
+
+function asyncFetchSingleItem(param) {
+    return new Promise(
+        function (resolve, reject) {
+            resolve(result);
+            reject(error);
+        }
+    );
+}
+
+/**
+ * arrangeRquests
+    * 进行若干次的 Promise 请求
+ *
+ * @returns {undefined}
+ */
+MTG_BUYER_CLASS.prototype.arrangeRquests = function() {
+    /* 这一组 asyc 函数的第一个参数都是一个
+    *  SINGLE_SEARCH_PARAMETER 对象
+    */
+    function asycCreateIframe(value) {
+        writeItemToShopCanvas(value.itemName, value.shopLink);
+    }
+    /*var asycWriteResult*/
+    writeFrameToCanvas();
+    for (var i=0; i<this.shopAmount; i++)
+    for (var j=0; j<this.cardAmount; j++) {
+        var req = Object.create(SINGLE_SEARCH_PARAMETER);
+        req.itemName = this.cards[j];
+        req.shopLink = this.shops[i];
+        Promise.resolve(req).then(asycCreateIframe);
+    }
+    alert("finished request");
+};
+
 MTG_BUYER_CLASS.prototype.submitForm = function(e) {
     this.shops = new Array(this.shopAmount);
     this.cards = new Array(this.cardAmount);
 
-    var i, j;
+    var i;
     for (i=0; i<this.shopAmount; i++) {this.shops[i] = $("#mtgCarShopLink"+String(i)).val();}
     for (i=0; i<this.cardAmount; i++) {this.cards[i] = $("#mtgCarCardName"+String(i)).val();}
     //FIXME: Used for test
@@ -83,12 +136,7 @@ MTG_BUYER_CLASS.prototype.submitForm = function(e) {
     this.cards[1] = "文胸";
     this.cards[2] = "打底";
 
-    writeFrameToCanvas();
-    for (i=0; i<this.shopAmount; i++)
-    for (j=0; j<this.cardAmount; j++) {
-        ret = fetchItemInShop(this.cards[j], this.shops[i]);
-        writeItemToShopCanvas(ret, this.shops[i]);
-    }
+    MTG_BUYER.arrangeRquests();
 
     return false;
 };
