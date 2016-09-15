@@ -41,23 +41,10 @@ function shopLinkToShopDiv(link) {
  */
 function writeItemToShopCanvas(item, shopLink) {
     var div = shopLinkToShopDiv(shopLink);
-    div.html(div.html() + "<br /> (Stub in writeItemToShopCanvas) " + item);
+    div.html(div.html() + "<br /> (Stub in writeItemToShopCanvas) " + item + "from" + shopLink);
     return true;
 }
 
-/**
- * fetchItemInShop
-    * 这个函数是一组 Promise 的包装，包括了整个获取信息的操作
-    * fetchItemInShop 自身也是一个 Promise
- *
- * @param {string} itemName
- * @param {string} shopLink
- * @returns {string} - processed HTML code
- */
-function fetchItemInShop(itemName, shopLink) {
-    /*createIframe(shopLink);*/
-    return "(Stub in fetchItemInShop)" + itemName + shopLink + "<br />";
-}
 
 function writeFrameToCanvas() {
     var createShopDiv = function (serial, width) {
@@ -82,10 +69,10 @@ var SINGLE_SEARCH_PARAMETER =
  * @returns {undefined}
  */
 MTG_BUYER_CLASS.prototype.arrangeRquests = function() {
-    /* 这一组 asyc 函数的第一个参数都是一个
-    *  SINGLE_SEARCH_PARAMETER 对象
+    /* 这一组 asyc 函数的参数是一个 Array
+    *  第一个参数都是一个 SINGLE_SEARCH_PARAMETER 对象
     */
-    function asycCreateIframe(value) {
+    function asycCreateIframe(req) {
         return new Promise(function(resolve, reject) {
             var sync_createIframe = function(url) {
                 var ifr = document.createElement("iframe");
@@ -95,22 +82,31 @@ MTG_BUYER_CLASS.prototype.arrangeRquests = function() {
                 $("#mtgResultCanvas").append(ifr);
                 return ifr;
             };
-            var ifr = sync_createIframe(value.shopLink);
-            resolve(value, ifr);
+            var ifr = sync_createIframe(req.shopLink);
+            var passData = new Array();
+            passData[0] = req;
+            passData[1] = ifr;
+            resolve(passData);
         });
     }
-    function asycFillWebForm(req, ifr) {
+    function asycFillWebForm(receive) {
         return new Promise(function(resolve, reject) {
-            resolve(req, "Stub fill web form");
+            var req = receive[0];
+            var ifr = receive[1];
+            var stubhtml = "Stub_FillWebForm";
+            var passData = new Array();
+            passData[0] = req;
+            passData[1] = stubhtml;
+            resolve(passData);
         });
     }
-    function asycResolveWebDate(req, html) {
+    function asycResolveWebDate(data) {
         return new Promise(function(resolve, reject) {
-            resolve(req, html);
+            resolve(data);
         });
     }
-    function writeResult(req, result) {
-        writeItemToShopCanvas(result, req.shopLink);
+    function writeResult(data) {
+        writeItemToShopCanvas(data[1], data[0].shopLink);
     }
     writeFrameToCanvas();
     for (var i=0; i<this.shopAmount; i++)
