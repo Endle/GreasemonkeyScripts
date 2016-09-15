@@ -44,6 +44,14 @@ function writeItemToShopCanvas(item, shopLink) {
  * @returns {string} - processed HTML code
  */
 function fetchItemInShop(itemName, shopLink) {
+    var createIframe = function(url) {
+        var ifr = document.createElement("iframe");
+        ifr.src = url;
+        //document.body.appendChild(ifr);
+        $("#mtgResultCanvas").append(ifr);
+        return ifr;
+    };
+    createIframe(shopLink);
     return "(Stub in fetchItemInShop)" + itemName + shopLink;
 }
 
@@ -71,6 +79,9 @@ MTG_BUYER_CLASS.prototype.submitForm = function(e) {
     //FIXME: Used for test
     this.shops[0] = "https://shop62237807.taobao.com";
     this.shops[1] = "https://shop65188790.taobao.com";
+    this.cards[0] = "背心";
+    this.cards[1] = "文胸";
+    this.cards[2] = "打底";
 
     writeFrameToCanvas();
     for (i=0; i<this.shopAmount; i++)
@@ -87,7 +98,7 @@ MTG_BUYER_CLASS.prototype.start = function() {
     this.mainDiv.setAttribute("id", "mtgCarManager");
 
     this.shopAmount = 2;
-    this.cardAmount = 1;
+    this.cardAmount = 3;
     this.createForm = function(shop, card) {
         var form = document.createElement("form");
         form.setAttribute("id", "mtgCarInputArea");
