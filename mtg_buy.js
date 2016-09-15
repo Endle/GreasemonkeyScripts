@@ -55,18 +55,6 @@ function writeItemToShopCanvas(item, shopLink) {
  * @returns {string} - processed HTML code
  */
 function fetchItemInShop(itemName, shopLink) {
-    var sync_createIframe = function(url) {
-        var ifr = document.createElement("iframe");
-        ifr.src = url;
-        $("#mtgResultCanvas").append(ifr);
-        return ifr;
-    };
-    var promise_createIframe = new Promise(function (resolve){
-        resolve(42);
-    });
-    jsRandomSleep(1000);
-    promise_createIframe.then(function(value){
-        console.log(value);});
     /*createIframe(shopLink);*/
     return "(Stub in fetchItemInShop)" + itemName + shopLink + "<br />";
 }
@@ -87,16 +75,6 @@ function writeFrameToCanvas() {
 
 var SINGLE_SEARCH_PARAMETER =
     {itemName: "Mox", shopLink: "https://shop101650459.taobao.com"};
-
-function asyncFetchSingleItem(param) {
-    return new Promise(
-        function (resolve, reject) {
-            resolve(result);
-            reject(error);
-        }
-    );
-}
-
 /**
  * arrangeRquests
     * 进行若干次的 Promise 请求
@@ -108,16 +86,29 @@ MTG_BUYER_CLASS.prototype.arrangeRquests = function() {
     *  SINGLE_SEARCH_PARAMETER 对象
     */
     function asycCreateIframe(value) {
-        writeItemToShopCanvas(value.itemName, value.shopLink);
+        return new Promise(function(resolve, reject) {
+            var sync_createIframe = function(url) {
+                var ifr = document.createElement("iframe");
+                ifr.src = url;
+                $("#mtgResultCanvas").append(ifr);
+                return ifr;
+            };
+            var ifr = sync_createIframe(value.shopLink);
+            resolve(value, ifr);
+        });
     }
-    /*var asycWriteResult*/
+    function asycWriteResult(req, result) {
+        writeItemToShopCanvas(req.itemName, req.shopLink);
+    }
     writeFrameToCanvas();
     for (var i=0; i<this.shopAmount; i++)
     for (var j=0; j<this.cardAmount; j++) {
         var req = Object.create(SINGLE_SEARCH_PARAMETER);
         req.itemName = this.cards[j];
         req.shopLink = this.shops[i];
-        Promise.resolve(req).then(asycCreateIframe);
+        Promise.resolve(req)
+            .then(asycCreateIframe)
+            .then(asycWriteResult);
     }
     alert("finished request");
 };
@@ -133,8 +124,8 @@ MTG_BUYER_CLASS.prototype.submitForm = function(e) {
     this.shops[0] = "https://shop62237807.taobao.com";
     this.shops[1] = "https://shop65188790.taobao.com";
     this.cards[0] = "背心";
-    this.cards[1] = "文胸";
-    this.cards[2] = "打底";
+    /*this.cards[1] = "文胸";*/
+    /*this.cards[2] = "打底";*/
 
     MTG_BUYER.arrangeRquests();
 
@@ -146,7 +137,7 @@ MTG_BUYER_CLASS.prototype.start = function() {
     this.mainDiv.setAttribute("id", "mtgCarManager");
 
     this.shopAmount = 2;
-    this.cardAmount = 3;
+    this.cardAmount = 1;
     this.createForm = function(shop, card) {
         var form = document.createElement("form");
         form.setAttribute("id", "mtgCarInputArea");
