@@ -93,7 +93,13 @@ MTG_BUYER_CLASS.prototype.arrangeRquests = function() {
         return new Promise(function(resolve, reject) {
             var req = receive[0];
             var ifr = receive[1];
-            var stubhtml = "Stub_FillWebForm";
+
+            /*var box = ifr.contentWindow.document.getElementByClassName("search-box");*/
+
+            /*var stubhtml = ifr.contentWindow.document.innerHTML;*/
+            var doc = ifr.contentWindow.document;
+            var box = doc.getElementById("J_SearchTab");
+            var stubhtml = String(box);
             var passData = new Array();
             passData[0] = req;
             passData[1] = stubhtml;
