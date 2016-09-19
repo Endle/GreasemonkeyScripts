@@ -8,6 +8,8 @@
 // @require     https://upcdn.b0.upaiyun.com/libs/jquery/jquery-2.0.3.min.js
 // ==/UserScript==
 
+var YYYYMMDD=new Date().toISOString().slice(0,new Date().toISOString().indexOf("T")).replace(/-/g,"");
+
 /**
  * jsRandomSleep
  *
