@@ -6,9 +6,20 @@
 // @version     1
 // @grant       none
 // @require     https://upcdn.b0.upaiyun.com/libs/jquery/jquery-2.0.3.min.js
+// @require     http://oe7yazmgc.bkt.clouddn.com/urlencode/bundle.js
 // ==/UserScript==
 
 var YYYYMMDD=new Date().toISOString().slice(0,new Date().toISOString().indexOf("T")).replace(/-/g,"");
+
+/**
+ * encode
+    * 使用 npm 的 urlencode 包
+    * browserify urlencode.js --s encode > bundle.js
+    * 存储在七牛服务器上
+ *
+ * @param s
+ * @returns {undefined}
+ */
 
 /**
  * jsRandomSleep
