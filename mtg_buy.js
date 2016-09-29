@@ -121,16 +121,31 @@ MTG_BUYER_CLASS.prototype.arrangeRquests = function() {
                     + "&searcy_type=item"
                     + "&s_from=newHeader&source=&ssid=s5-e&search=y"
                     + "&initiative_id=shopz_" + String(YYYYMMDD);
-                writeItemToShopCanvas(passData.searchLink, passData.req.shopLink);
                 resolve(passData);
             });
         }
+        function asycFetchData(receive) {
+            return new Promise(function(resolve, reject) {
+                var passData = Object.create(receive);
+                writeItemToShopCanvas(passData.searchLink, passData.req.shopLink);
+                fetch(passData.searchLink)
+                    .then(function(response) {
+                        writeItemToShopCanvas("fetch", passData.req.shopLink);
+                    })
+                    .catch(function (err) {
+                        writeItemToShopCanvas(err, passData.req.shopLink);
+                    });
+                resolve(passData);
+            });
+        }
+
         var req;
         for (var i=0; i<MTG_BUYER.shopAmount; i++) {
             req = Object.create(receive[0]); //不复制的话，只会请求第一个网址
             req.shopLink = MTG_BUYER.shops[i];
             Promise.resolve({"req":req})
-                .then(asycBuildLink);
+                .then(asycBuildLink)
+                .then(asycFetchData);
         }
     }
 
