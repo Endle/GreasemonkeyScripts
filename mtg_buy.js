@@ -128,7 +128,15 @@ MTG_BUYER_CLASS.prototype.arrangeRquests = function() {
             return new Promise(function(resolve, reject) {
                 var passData = Object.create(receive);
                 writeItemToShopCanvas(passData.searchLink, passData.req.shopLink);
-                fetch(passData.searchLink)
+                /*var myRequest = new Request(passData.searchLink);*/
+                var myRequest = new Request("markets/food/jsjm?spm=a21bo.50862.201879-item-1016.5.BblTsf&scm=1007.12802.48465.100200300000000&pvid=016e72c7-4ec3-4264-a95f-2a1e1fb64193");
+                var myInit = {
+                    method: 'GET',
+                    /*headers: myHeaders,*/
+                    mode: 'cors',
+                    cache: 'default'
+                };
+                    fetch(myRequest, myInit)
                     .then(function(response) {
                         writeItemToShopCanvas("fetch", passData.req.shopLink);
                     })
