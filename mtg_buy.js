@@ -54,10 +54,17 @@ function shopLinkToShopDiv(link) {
  */
 function writeItemToShopCanvas(item, shopLink) {
     var div = shopLinkToShopDiv(shopLink);
-    div.html(div.html() + "<br /> (Stub in writeItemToShopCanvas) " + item + "from" + shopLink);
+    div.html(div.html() + "<br /> (Stub in writeItemToShopCanvas) " + item + " from " + shopLink);
     return true;
 }
 
+// http://stackoverflow.com/a/36242700/1166518
+function stripTrailingSlash(str) {
+    if (str.endsWith('/')) {
+        return str.slice(0, -1);
+    }
+    return str;
+}
 
 function writeFrameToCanvas() {
     var createShopDiv = function (serial, width) {
@@ -174,10 +181,14 @@ MTG_BUYER_CLASS.prototype.submitForm = function(e) {
     for (i=0; i<this.cardAmount; i++) {this.cards[i] = $("#mtgCarCardName"+String(i)).val();}
     //FIXME: Used for test
     this.shops[0] = "https://shop62237807.taobao.com";
-    this.shops[1] = "https://shop65188790.taobao.com";
+    this.shops[1] = "https://shop65188790.taobao.com/";
     this.cards[0] = "背心";
-    /*this.cards[1] = "文胸";*/
-    /*this.cards[2] = "打底";*/
+    this.cards[1] = "文胸";
+    this.cards[2] = "打底";
+
+    for (i=0; i<this.shopAmount; i++) {
+        this.shops[i] = stripTrailingSlash(this.shops[i]);
+    }
 
     MTG_BUYER.arrangeRquests();
 
@@ -189,7 +200,7 @@ MTG_BUYER_CLASS.prototype.start = function() {
     this.mainDiv.setAttribute("id", "mtgCarManager");
 
     this.shopAmount = 2;
-    this.cardAmount = 1;
+    this.cardAmount = 3;
     this.createForm = function(shop, card) {
         var form = document.createElement("form");
         form.setAttribute("id", "mtgCarInputArea");
