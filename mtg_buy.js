@@ -84,8 +84,9 @@ MTG_BUYER_CLASS.prototype.arrangeRquests = function() {
         itemCode: "%B1%B3%D0%C4",
         itemName: "背心",
         shopLink: "https://shop101650459.taobao.com"};
-    /* 这一组 asyc 函数的参数是一个 Array
-    *  第一个参数都是一个 SINGLE_SEARCH_PARAMETER 对象
+    /* 这一组 asyc 函数的参数是一个 对象
+    *  第一个参数 req 都是一个 SINGLE_SEARCH_PARAMETER 对象
+    *  接下来的参数传递其他信息
     */
     function asycConvertCardName(req) {
         return new Promise(function(resolve, reject) {
@@ -105,26 +106,31 @@ MTG_BUYER_CLASS.prototype.arrangeRquests = function() {
      * @returns {undefined}
      */
     function searchInShops(receive) {
-        var req = receive[0];
+        function asycBuildLink(req) {
+            return new Promise(function(resolve, reject) {
+                var passData = {
+                    "req": "",
+                    "searchLink" : ""
+                };
+                passData.req = req;
+                writeItemToShopCanvas(passData.req.itemCode, req.shopLink);
+                resolve(passData);
+            });
+        }
+        var req;
         for (var i=0; i<MTG_BUYER.shopAmount; i++) {
-            writeItemToShopCanvas(req.itemCode, MTG_BUYER.shops[i]);
+            req = Object.create(receive[0]); //不复制的话，只会请求第一个网址
+            req.shopLink = MTG_BUYER.shops[i];
+            Promise.resolve(req)
+                .then(asycBuildLink);
         }
     }
 
     function asycFillWebForm(receive) {
         return new Promise(function(resolve, reject) {
             var req = receive[0];
-            var ifr = receive[1];
-
-            /*var box = ifr.contentWindow.document.getElementByClassName("search-box");*/
-
-            /*var stubhtml = ifr.contentWindow.document.innerHTML;*/
-            var doc = ifr.contentWindow.document;
-            var box = doc.getElementById("J_SearchTab");
-            var stubhtml = String(box);
             var passData = new Array();
             passData[0] = req;
-            passData[1] = stubhtml;
             resolve(passData);
         });
     }
