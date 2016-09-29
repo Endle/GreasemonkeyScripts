@@ -73,8 +73,6 @@ function writeFrameToCanvas() {
     }
 }
 
-var SINGLE_SEARCH_PARAMETER =
-    {itemName: "Mox", shopLink: "https://shop101650459.taobao.com"};
 /**
  * arrangeRquests
     * 进行若干次的 Promise 请求
@@ -82,26 +80,37 @@ var SINGLE_SEARCH_PARAMETER =
  * @returns {undefined}
  */
 MTG_BUYER_CLASS.prototype.arrangeRquests = function() {
+    var SINGLE_SEARCH_PARAMETER = {
+        itemCode: "%B1%B3%D0%C4",
+        itemName: "背心",
+        shopLink: "https://shop101650459.taobao.com"};
     /* 这一组 asyc 函数的参数是一个 Array
     *  第一个参数都是一个 SINGLE_SEARCH_PARAMETER 对象
     */
-    function asycCreateIframe(req) {
+    function asycConvertCardName(req) {
         return new Promise(function(resolve, reject) {
-            var sync_createIframe = function(url) {
-                var ifr = document.createElement("iframe");
-                ifr.width = "1000px";
-                ifr.height = "400px";
-                ifr.src = url;
-                $("#mtgResultCanvas").append(ifr);
-                return ifr;
-            };
-            var ifr = sync_createIframe(req.shopLink);
+            req.itemCode = encode(req.itemName);
             var passData = new Array();
             passData[0] = req;
-            passData[1] = ifr;
             resolve(passData);
         });
     }
+
+    /**
+     * searchInShops
+        * 对给定的一张卡，在多家商店内启动一组搜索
+        * 发起的搜索是异步的，但该函数并不返回 Promise 对象
+     *
+     * @param receive
+     * @returns {undefined}
+     */
+    function searchInShops(receive) {
+        var req = receive[0];
+        for (var i=0; i<MTG_BUYER.shopAmount; i++) {
+            writeItemToShopCanvas(req.itemCode, MTG_BUYER.shops[i]);
+        }
+    }
+
     function asycFillWebForm(receive) {
         return new Promise(function(resolve, reject) {
             var req = receive[0];
@@ -128,10 +137,16 @@ MTG_BUYER_CLASS.prototype.arrangeRquests = function() {
         writeItemToShopCanvas(data[1], data[0].shopLink);
     }
     writeFrameToCanvas();
-    for (var i=0; i<this.shopAmount; i++)
-    for (var j=0; j<this.cardAmount; j++) {
+
+    for (var c=0; c<this.cardAmount; c++) {
         var req = Object.create(SINGLE_SEARCH_PARAMETER);
-        req.itemName = this.cards[j];
+        req.itemName = this.cards[c];
+        Promise.resolve(req)
+            .then(asycConvertCardName)
+            .then(searchInShops);
+    }
+    /*
+    {
         req.shopLink = this.shops[i];
         Promise.resolve(req)
             .then(asycCreateIframe)
@@ -139,7 +154,8 @@ MTG_BUYER_CLASS.prototype.arrangeRquests = function() {
             .then(asycResolveWebDate)
             .then(writeResult);
     }
-    alert("finished request");
+    */
+    /*alert("finished request");*/
 };
 
 MTG_BUYER_CLASS.prototype.submitForm = function(e) {
