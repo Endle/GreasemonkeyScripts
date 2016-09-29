@@ -106,14 +106,15 @@ MTG_BUYER_CLASS.prototype.arrangeRquests = function() {
      * @returns {undefined}
      */
     function searchInShops(receive) {
-        function asycBuildLink(req) {
+        function asycBuildLink(receive) {
             return new Promise(function(resolve, reject) {
-                var passData = {
-                    "req": "",
-                    "searchLink" : ""
-                };
-                passData.req = req;
-                writeItemToShopCanvas(passData.req.itemCode, req.shopLink);
+                var passData = {"req": receive.req};
+                passData.searchLink = passData.req.shopLink
+                    + "/search.htm?q=" + passData.req.itemCode
+                    + "&searcy_type=item"
+                    + "&s_from=newHeader&source=&ssid=s5-e&search=y"
+                    + "&initiative_id=shopz_" + String(YYYYMMDD);
+                writeItemToShopCanvas(passData.searchLink, passData.req.shopLink);
                 resolve(passData);
             });
         }
@@ -121,7 +122,7 @@ MTG_BUYER_CLASS.prototype.arrangeRquests = function() {
         for (var i=0; i<MTG_BUYER.shopAmount; i++) {
             req = Object.create(receive[0]); //不复制的话，只会请求第一个网址
             req.shopLink = MTG_BUYER.shops[i];
-            Promise.resolve(req)
+            Promise.resolve({"req":req})
                 .then(asycBuildLink);
         }
     }
