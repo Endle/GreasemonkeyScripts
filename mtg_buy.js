@@ -128,11 +128,44 @@ MTG_BUYER_CLASS.prototype.arrangeRquests = function() {
             return new Promise(function(resolve, reject) {
                 var passData = Object.create(receive);
                 writeItemToShopCanvas(passData.searchLink, passData.req.shopLink);
-                /*var myRequest = new Request(passData.searchLink);*/
-                var myRequest = new Request("markets/food/jsjm?spm=a21bo.50862.201879-item-1016.5.BblTsf&scm=1007.12802.48465.100200300000000&pvid=016e72c7-4ec3-4264-a95f-2a1e1fb64193");
+                var iframe = document.createElement('iframe');
+                iframe.src = passData.searchLink;
+                iframe.addEventListener("load", function() {
+                    var doc = iframe.contentDocument;
+                    writeItemToShopCanvas("show", passData.req.shopLink);
+                }, true);
+                MTG_BUYER.mainDiv.appendChild(iframe);
+                /*
+                $.get(passData.searchLink, function(data){
+                    writeItemToShopCanvas(data.contents, passData.req.shopLink);
+                });
+                */
+                /*
+                var xhr = new XMLHttpRequest();
+                xhr.open("get", "https://segmentfault.com/q/1010000003853718", true);
+                xhr.onreadystatechange = function() {
+                    writeItemToShopCanvas(String(xhr.readyState), passData.req.shopLink);
+                    if (xhr.readyState == 4) {
+                        writeItemToShopCanvas(xhr.responseURL
+                            + "status: " + String(xhr.statusText)
+                            + "num: " + String(xhr.status)
+                            + xhr.getResponseHeader("Content-Type")
+                            ,
+                            passData.req.shopLink);
+                    }
+                }
+                xhr.send();
+                */
+                /*
+                var myRequest = new Request(passData.searchLink);
                 var myInit = {
                     method: 'GET',
-                    /*headers: myHeaders,*/
+                    headers: {
+                "Access-Control-Allow-Headers": "*",
+                "Access-Control-Allow-Methods": "*",
+                "Access-Control-Allow-Origin": passData.req.shopLink,
+                "Origin": passData.req.shopLink
+                    },
                     mode: 'cors',
                     cache: 'default'
                 };
@@ -143,6 +176,7 @@ MTG_BUYER_CLASS.prototype.arrangeRquests = function() {
                     .catch(function (err) {
                         writeItemToShopCanvas(err, passData.req.shopLink);
                     });
+                */
                 resolve(passData);
             });
         }
@@ -223,7 +257,7 @@ MTG_BUYER_CLASS.prototype.start = function() {
     this.mainDiv.setAttribute("id", "mtgCarManager");
 
     this.shopAmount = 2;
-    this.cardAmount = 3;
+    this.cardAmount = 1;
     this.createForm = function(shop, card) {
         var form = document.createElement("form");
         form.setAttribute("id", "mtgCarInputArea");
