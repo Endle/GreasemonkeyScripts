@@ -4,7 +4,7 @@
 // @description 方便地在淘宝批量买牌
 // @include     http*://*.taobao.com/*
 // @version     1
-// @grant       none
+// @grant       GM_xmlhttpRequest
 // @require     https://upcdn.b0.upaiyun.com/libs/jquery/jquery-2.0.3.min.js
 // @require     http://oe7yazmgc.bkt.clouddn.com/urlencode/bundle.js
 // ==/UserScript==
@@ -128,55 +128,21 @@ MTG_BUYER_CLASS.prototype.arrangeRquests = function() {
             return new Promise(function(resolve, reject) {
                 var passData = Object.create(receive);
                 writeItemToShopCanvas(passData.searchLink, passData.req.shopLink);
-                var iframe = document.createElement('iframe');
-                iframe.src = passData.searchLink;
-                iframe.addEventListener("load", function() {
-                    var doc = iframe.contentDocument;
-                    writeItemToShopCanvas("show", passData.req.shopLink);
-                }, true);
-                MTG_BUYER.mainDiv.appendChild(iframe);
-                /*
-                $.get(passData.searchLink, function(data){
-                    writeItemToShopCanvas(data.contents, passData.req.shopLink);
-                });
-                */
-                /*
-                var xhr = new XMLHttpRequest();
-                xhr.open("get", "https://segmentfault.com/q/1010000003853718", true);
-                xhr.onreadystatechange = function() {
-                    writeItemToShopCanvas(String(xhr.readyState), passData.req.shopLink);
-                    if (xhr.readyState == 4) {
-                        writeItemToShopCanvas(xhr.responseURL
-                            + "status: " + String(xhr.statusText)
-                            + "num: " + String(xhr.status)
-                            + xhr.getResponseHeader("Content-Type")
-                            ,
-                            passData.req.shopLink);
+                GM_xmlhttpRequest({
+                    method: "GET",
+                    url: passData.searchLink,
+                    onload: function(response) {
+                        writeItemToShopCanvas("Finished fetch", passData.req.shopLink);
+                        passData.response = response.responseText;
+                        resolve(passData);
                     }
-                }
-                xhr.send();
-                */
-                /*
-                var myRequest = new Request(passData.searchLink);
-                var myInit = {
-                    method: 'GET',
-                    headers: {
-                "Access-Control-Allow-Headers": "*",
-                "Access-Control-Allow-Methods": "*",
-                "Access-Control-Allow-Origin": passData.req.shopLink,
-                "Origin": passData.req.shopLink
-                    },
-                    mode: 'cors',
-                    cache: 'default'
-                };
-                    fetch(myRequest, myInit)
-                    .then(function(response) {
-                        writeItemToShopCanvas("fetch", passData.req.shopLink);
-                    })
-                    .catch(function (err) {
-                        writeItemToShopCanvas(err, passData.req.shopLink);
-                    });
-                */
+                });
+            });
+        }
+        function asycResolveData(receive) {
+            return new Promise(function(resolve, reject) {
+                var passData = Object.create(receive);
+                writeItemToShopCanvas("handle", passData.req.shopLink);
                 resolve(passData);
             });
         }
@@ -187,7 +153,8 @@ MTG_BUYER_CLASS.prototype.arrangeRquests = function() {
             req.shopLink = MTG_BUYER.shops[i];
             Promise.resolve({"req":req})
                 .then(asycBuildLink)
-                .then(asycFetchData);
+                .then(asycFetchData)
+                .then(asycResolveData);
         }
     }
 
