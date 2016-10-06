@@ -120,6 +120,7 @@ MTG_BUYER_CLASS.prototype.arrangeRquests = function() {
                     + "/search.htm?q=" + passData.req.itemCode
                     + "&searcy_type=item"
                     + "&s_from=newHeader&source=&ssid=s5-e&search=y"
+                    + "&viewType=list"
                     + "&initiative_id=shopz_" + String(YYYYMMDD);
                 resolve(passData);
             });
@@ -141,8 +142,21 @@ MTG_BUYER_CLASS.prototype.arrangeRquests = function() {
         }
         function asycResolveData(receive) {
             return new Promise(function(resolve, reject) {
-                var passData = Object.create(receive);
-                writeItemToShopCanvas("handle", passData.req.shopLink);
+                var passData = {req: receive.req};
+                writeItemToShopCanvas("Handle: " + passData.req.itemName, passData.req.shopLink);
+                html = $.parseHTML(receive.response);
+                list = $.grep(html, function(elm, index) {
+                    try{
+                        return elm.nodeName === "DIV";
+                    }
+                    catch(ex)
+                    {
+                        return false;
+                    }
+                    /*writeItemToShopCanvas(elm, passData.req.shopLink);*/
+                    /*return true;*/
+                });
+                writeItemToShopCanvas(list.length, passData.req.shopLink);
                 resolve(passData);
             });
         }
@@ -158,19 +172,6 @@ MTG_BUYER_CLASS.prototype.arrangeRquests = function() {
         }
     }
 
-    function asycFillWebForm(receive) {
-        return new Promise(function(resolve, reject) {
-            var req = receive[0];
-            var passData = new Array();
-            passData[0] = req;
-            resolve(passData);
-        });
-    }
-    function asycResolveWebDate(data) {
-        return new Promise(function(resolve, reject) {
-            resolve(data);
-        });
-    }
     function writeResult(data) {
         writeItemToShopCanvas(data[1], data[0].shopLink);
     }
@@ -183,17 +184,6 @@ MTG_BUYER_CLASS.prototype.arrangeRquests = function() {
             .then(asycConvertCardName)
             .then(searchInShops);
     }
-    /*
-    {
-        req.shopLink = this.shops[i];
-        Promise.resolve(req)
-            .then(asycCreateIframe)
-            .then(asycFillWebForm)
-            .then(asycResolveWebDate)
-            .then(writeResult);
-    }
-    */
-    /*alert("finished request");*/
 };
 
 MTG_BUYER_CLASS.prototype.submitForm = function(e) {
